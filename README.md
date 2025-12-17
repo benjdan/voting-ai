@@ -1,23 +1,26 @@
 # Generic Rest/Springboot Voting Application
-
+## 🎯 What You'll Build
 A Generic Spring Boot voting application with blockchain-inspired immutable ledger, hexagonal architecture, and AI capabilities.
 
-## Features
-
+🧑‍🍳 Features
 - **Hexagonal Architecture**: Clean separation of concerns with domain, application, infrastructure, and API layers
   - Capable of integrating to different programming languages and ui frameworks
-- **Email-based Registration & Authentication**: Simple JWT-based authentication system
-- **CRUD Voting System**: Create, read, and participate in voting polls
-- **Blockchain-Inspired Ledger**: Immutable vote records using SHA-256 hash chaining
-- **AI Integration**: 
+🔐**Email-based Registration & Authentication**: Simple JWT-based authentication system
+📝**CRUD Voting System**: Create, read, and participate in voting polls
+🔐**Blockchain-Inspired Ledger**: Immutable vote records using SHA-256 hash chaining
+🔄**AI Integration**: 
   - OpenAI GPT for vote description enhancement and insights
   - xAI Grok for advanced vote analysis
-- **RESTful API**: Designed for React Native/React app consumption
-- **API Documentation**: Interactive Swagger/OpenAPI documentation
-- **Tamper-Proof Verification**: Blockchain integrity verification endpoint
+🏠**RESTful API**: Designed for React Native/React app consumption
+🗑️**API Documentation**: Interactive Swagger/OpenAPI documentation
+🗑️**Tamper-Proof Verification**: Blockchain integrity verification endpoint
 
+🧠 What You’ll Learn
+- Implement authentication & email verification
+- Build a springboot backend services(CRUD style)
+- Integration of AI and blockchain technologies
+  
 ## Technology Stack
-
 - **Framework**: Spring Boot 3.2.0 with AI
 - **Language**: Java 19 / Java 21 (Docker)
 - **Database**: H2 (in-memory for development)
@@ -30,7 +33,6 @@ A Generic Spring Boot voting application with blockchain-inspired immutable ledg
 ## Architecture
 
 ### Hexagonal Architecture (Ports & Adapters)
-
 ```
 src/main/java/com/voting/
 ├── domain/              # Core business logic
@@ -53,7 +55,6 @@ src/main/java/com/voting/
 ## Setup & Running
 
 ### Prerequisites
-
 - Java 19 or higher (Java 21 recommended for Docker deployments)
 - Maven 3.6+
 - (Optional) OpenAI API key for AI features
@@ -62,7 +63,6 @@ src/main/java/com/voting/
 **Note**: The project is configured to use Java 19, but the Docker image uses Java 21 for containerized deployments. Both versions are fully supported.
 
 ### Environment Variables
-
 Create a `.env` file or set these environment variables:
 
 ```bash
@@ -72,7 +72,6 @@ XAI_API_KEY=your-xai-api-key (optional)
 ```
 
 ### Running Locally
-
 ```bash
 # Install dependencies and build
 mvn clean install
@@ -84,7 +83,6 @@ mvn spring-boot:run
 The application will start on `http://localhost:8085`
 
 ### Running with Docker
-
 ```bash
 # Build the Docker image
 docker build -t blockchain-voting:latest .
@@ -149,7 +147,6 @@ The application uses a blockchain-inspired immutable ledger:
 ## Development
 
 ### Running Tests
-
 The project includes comprehensive unit and integration tests covering all major components:
 
 ```bash
@@ -198,10 +195,10 @@ curl -X POST http://localhost:8085/api/votes \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
     "title":"Favorite Programming Language",
-    "description":"Vote for your favorite player",
-    "options":["Juan Tamad"],
+    "description":"Vote for your favorite programming language",
+    "options":["Java"],
     "startDate":"2024-01-01T00:00:00",
-    "endDate":"2024-12-31T23:59:59",
+    "endDate":"2026-12-31T23:59:59",
     "useAIEnhancement":false
   }'
 ```
@@ -234,4 +231,4 @@ For production deployments, consider:
 4. Setting up monitoring and logging
 
 
-No Copyright No Rights Reserved No Attribution Required For more information, see the CC0 1.0 Universal license.
+No Copyright No Rights Reserved No Attribution Required For more information, see the MIT license.
