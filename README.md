@@ -5,15 +5,15 @@ A Generic Spring Boot voting application with blockchain-inspired immutable ledg
 🧑‍🍳 Features
 - **Hexagonal Architecture**: Clean separation of concerns with domain, application, infrastructure, and API layers
   - Capable of integrating to different programming languages and ui frameworks
-🔐**Email-based Registration & Authentication**: Simple JWT-based authentication system
-📝**CRUD Voting System**: Create, read, and participate in voting polls
-🔐**Blockchain-Inspired Ledger**: Immutable vote records using SHA-256 hash chaining
-🔄**AI Integration**: 
+- 🔐**Email-based Registration & Authentication**: Simple JWT-based authentication system
+- 📝**CRUD Voting System**: Create, read, and participate in voting polls
+- 🔐**Blockchain-Inspired Ledger**: Immutable vote records using SHA-256 hash chaining
+- 🔄**AI Integration**: 
   - OpenAI GPT for vote description enhancement and insights
   - xAI Grok for advanced vote analysis
-🏠**RESTful API**: Designed for React Native/React app consumption
-🗑️**API Documentation**: Interactive Swagger/OpenAPI documentation
-🗑️**Tamper-Proof Verification**: Blockchain integrity verification endpoint
+- 🏠**RESTful API**: Designed for React Native/React app consumption
+- 🗑️**API Documentation**: Interactive Swagger/OpenAPI documentation
+- 🗑️**Tamper-Proof Verification**: Blockchain integrity verification endpoint
 
 🧠 What You’ll Learn
 - Implement authentication & email verification
