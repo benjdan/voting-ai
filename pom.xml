@@ -14,7 +14,7 @@
     
     <groupId>com.voting</groupId>
     <artifactId>voting-ai</artifactId>
-    <version>1.2.0</version>
+    <version>1.1.0</version>
     <name>Voting Application with AI</name>
     <description>Spring Boot voting application with blockchain-inspired immutable ledger and AI capabilities</description>
     
