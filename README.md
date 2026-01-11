@@ -222,6 +222,8 @@ The application includes a multi-stage Dockerfile optimized for production:
 Build stage: Compiles the application with Maven
 Runtime stage: Runs the application with minimal JRE
 
+Note: Do not forget to install lombok library in your IDE dir to use lombok features
+
 ### Environment-Specific Configuration
 For production deployments, consider:
 
@@ -229,6 +231,5 @@ For production deployments, consider:
 2. Enabling HTTPS/TLS
 3. Implementing rate limiting
 4. Setting up monitoring and logging
-
 
 No Copyright No Rights Reserved No Attribution Required For more information, see the MIT license.
