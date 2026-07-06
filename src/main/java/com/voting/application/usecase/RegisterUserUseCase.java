@@ -6,6 +6,8 @@ package com.voting.application.usecase;
 import com.voting.domain.model.User;
 import com.voting.domain.port.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class RegisterUserUseCase {
-    
+    private static final Logger LOGGER = LogManager.getLogger(RegisterUserUseCase.class);
+
 	@Autowired
     private UserRepository userRepository;
 	
@@ -28,6 +31,7 @@ public class RegisterUserUseCase {
     
     @Transactional
     public User execute(String email, String password, String name) {
+		LOGGER.debug("Registering user email={}", email);
         if (userRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("Email already registered");
         }
