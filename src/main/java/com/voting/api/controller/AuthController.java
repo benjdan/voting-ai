@@ -14,7 +14,8 @@ import com.voting.infrastructure.security.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 @CrossOrigin(origins = "*")
-// @Slf4j
 public class AuthController {
-    
+    private static final Logger LOGGER = LogManager.getLogger(AuthController.class);
+	
 	@Autowired
     private RegisterUserUseCase registerUserUseCase;
 	@Autowired
@@ -41,10 +42,11 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
-//        log.info("Received registration request for email: {}", request.getEmail());
+		LOGGER.info("Received registration request for email: {}", request.getEmail());
         try {
             User user = registerUserUseCase.execute(request.getEmail(), request.getPassword(), request.getName());
-            
+
+			LOGGER.debug("Generating JWT token for userId={}, email={}", user.getId(), user.getEmail());
             String token = jwtUtil.generateToken(user.getEmail(), user.getId());
             
             AuthResponse authResponse = AuthResponse.builder()
@@ -54,21 +56,25 @@ public class AuthController {
                     .name(user.getName())
                     .userId(user.getId())
                     .build();
-            
+            LOGGER.info("User registered successfully with email={}, userId={}", user.getEmail(), user.getId());
             return ResponseEntity.ok(ApiResponse.success("User registered successfully", authResponse));
         } catch (IllegalArgumentException e) {
-//            log.error("Registration failed", e);
+            LOGGER.error("Registration failed for email={}: {}", request.getEmail(), e.getMessage(), e);
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during registration for email={}", request.getEmail(), e);
+            return ResponseEntity.badRequest().body(ApiResponse.error("Registration failed: " + e.getMessage()));
         }
     }
     
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
+		LOGGER.info("Received login request for email: {}", request.getEmail());
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-            
+            LOGGER.debug("Authentication successful for email={}", request.getEmail());
             User user = userRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             
@@ -81,9 +87,13 @@ public class AuthController {
                     .name(user.getName())
                     .userId(user.getId())
                     .build();
-            
+            LOGGER.info("User login successful for email={}, userId={}", user.getEmail(), user.getId());
             return ResponseEntity.ok(ApiResponse.success("Login successful", authResponse));
+        } catch (RuntimeException e) {
+            LOGGER.error("User not found during login attempt for email={}", request.getEmail(), e);
+            return ResponseEntity.badRequest().body(ApiResponse.error("Invalid credentials"));
         } catch (Exception e) {
+            LOGGER.error("Authentication failed for email={}: {}", request.getEmail(), e.getMessage(), e);
             return ResponseEntity.badRequest().body(ApiResponse.error("Invalid credentials"));
         }
     }
