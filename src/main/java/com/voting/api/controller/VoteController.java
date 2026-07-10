@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,8 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 @Builder
 public class VoteController {
-    
+    private static final Logger LOGGER = LogManager.getLogger(VoteController.class);
+
 	@Autowired
     private CreateVoteUseCase createVoteUseCase;
 	@Autowired
@@ -51,7 +54,9 @@ public class VoteController {
             @Valid @RequestBody CreateVoteRequest request,
             HttpServletRequest httpRequest) {
         try {
+            LOGGER.info("Received request to create vote with title={}", request.getTitle());
             Long userId = extractUserId(httpRequest);
+            LOGGER.debug("Creating vote for userId={}, title={}", userId, request.getTitle());
             
             Vote vote = createVoteUseCase.execute(
                     userId,
@@ -63,8 +68,13 @@ public class VoteController {
                     request.isUseAIEnhancement()
             );
             
+            LOGGER.info("Vote created successfully with voteId={}, title={}, creator={}", vote.getId(), vote.getTitle(), userId);
             return ResponseEntity.ok(ApiResponse.success("Vote created successfully", mapToResponse(vote)));
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Invalid argument while creating vote: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
+            LOGGER.error("Unexpected error while creating vote with title={}", request.getTitle(), e);
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
@@ -101,14 +111,23 @@ public class VoteController {
             HttpServletRequest httpRequest) {
         try {
             Long userId = extractUserId(httpRequest);
+            LOGGER.debug("User userId={} casting vote for voteId={}, optionId={}", userId, id, request.getVoteOptionId());
             
             BlockchainRecord record = castVoteUseCase.execute(userId, id, request.getVoteOptionId());
             
+            LOGGER.info("Vote cast successfully for voteId={}, userId={}, blockNumber={}", id, userId, record.getBlockNumber());
             return ResponseEntity.ok(ApiResponse.success(
                     "Vote cast successfully. Block #" + record.getBlockNumber(),
                     record.getCurrentHash()
             ));
+        } catch (IllegalStateException e) {
+            LOGGER.error("Invalid vote state for voteId={}: {}", id, e.getMessage());
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Invalid argument while casting vote for voteId={}: {}", id, e.getMessage(), e);
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
+            LOGGER.error("Unexpected error while casting vote for voteId={}", id, e);
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
