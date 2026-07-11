@@ -10,6 +10,8 @@ import com.voting.application.service.AIService;
 import com.voting.domain.model.Vote;
 import com.voting.domain.port.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OpenAIServiceImpl implements AIService {
-    
+    private static final Logger LOGGER = LogManager.getLogger(OpenAIServiceImpl.class);
+
 	@Autowired
     private VoteRepository voteRepository;
     
@@ -55,6 +58,7 @@ public class OpenAIServiceImpl implements AIService {
             service.shutdownExecutor();
             return result;
         } catch (Exception e) {
+            LOGGER.error("Failed to enhance vote description for title={}", title, e);
             return description;
         }
     }
@@ -92,6 +96,7 @@ public class OpenAIServiceImpl implements AIService {
             service.shutdownExecutor();
             return result;
         } catch (Exception e) {
+            LOGGER.error("Error analyzing vote results for voteId={}", vote == null ? null : vote.getId(), e);
             return "Error generating analysis: " + e.getMessage();
         }
     }
@@ -102,10 +107,9 @@ public class OpenAIServiceImpl implements AIService {
 		try {
 			vote = voteRepository.findByCreatorId(voteId).get(0);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			LOGGER.error("Vote not found="+e.getLocalizedMessage());
 			throw new IllegalArgumentException("Vote not found="+e.getLocalizedMessage());
 		}
-//                new IllegalArgumentException("Vote not found"));
         
         return analyzeVoteResults(vote);
     }
