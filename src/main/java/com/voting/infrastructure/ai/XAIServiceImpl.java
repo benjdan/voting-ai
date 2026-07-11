@@ -6,6 +6,8 @@ package com.voting.infrastructure.ai;
 import com.voting.domain.model.Vote;
 import com.voting.domain.port.VoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,7 @@ import java.util.Map;
 @Service("xAIService")
 @RequiredArgsConstructor
 public class XAIServiceImpl {
-    
+    private static final Logger LOGGER = LogManager.getLogger(XAIServiceImpl.class);
 	@Autowired
     private VoteRepository voteRepository;
     private final RestTemplate restTemplate = new RestTemplate();
@@ -45,6 +47,7 @@ public class XAIServiceImpl {
             
             return callXAIApi(prompt);
         } catch (Exception e) {
+            LOGGER.error("Failed to enhance vote description for title={}", title, e);
             return description;
         }
     }
@@ -68,6 +71,7 @@ public class XAIServiceImpl {
             
             return callXAIApi(prompt);
         } catch (Exception e) {
+            LOGGER.error("Error analyzing vote results for voteId={}", vote == null ? null : vote.getId(), e);
             return "Error generating analysis: " + e.getMessage();
         }
     }
