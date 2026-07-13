@@ -9,6 +9,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.security.Key;
 import java.util.Date;
@@ -18,7 +20,7 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-    
+    private static final Logger LOGGER = LogManager.getLogger(JwtUtil.class);
     // @Value("${jwt.secret}")
     private String secret = "B0412010046637897CE7268FCA27E8B8";
     
@@ -68,7 +70,11 @@ public class JwtUtil {
     
     public Boolean validateToken(String token, String email) {
         final String extractedEmail = extractEmail(token);
-        return (extractedEmail.equals(email) && !isTokenExpired(token));
+        boolean valid = (extractedEmail.equals(email) && !isTokenExpired(token));
+        if (!valid) {
+            LOGGER.debug("JWT validation failed for email={} tokenExpired={}", extractedEmail, isTokenExpired(token));
+        }
+        return valid;
     }
     
     private Key getSignKey() {
