@@ -11,6 +11,8 @@ import com.voting.domain.model.VoteOption;
 import com.voting.domain.port.BlockchainRepository;
 import com.voting.domain.valueobject.VoteRecord;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BlockchainServiceImpl implements BlockchainService {
-    
+    private static final Logger LOGGER = LogManager.getLogger(BlockchainServiceImpl.class);
 	public BlockchainServiceImpl(BlockchainRepository blockchainRepository) {
 		this.blockchainRepository = blockchainRepository;
 	}
@@ -36,6 +38,7 @@ public class BlockchainServiceImpl implements BlockchainService {
     
     @Override
     public BlockchainRecord createVoteBlock(User user, Vote vote, VoteOption voteOption) {
+		LOGGER.info("Creating vote block for user={} vote={} option={}", user == null ? null : user.getId(), vote == null ? null : vote.getId(), voteOption == null ? null : voteOption.getId());
         BlockchainRecord latestBlock = blockchainRepository.findLatestBlock().orElse(null);
         
         long blockNumber = latestBlock == null ? 0 : latestBlock.getBlockNumber() + 1;
@@ -159,6 +162,7 @@ public class BlockchainServiceImpl implements BlockchainService {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
+			LOGGER.error("Error calculating hash", e);
             throw new RuntimeException("Error calculating hash", e);
         }
     }
