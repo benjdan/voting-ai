@@ -8,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +25,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+    private static final Logger LOGGER = LogManager.getLogger(JwtAuthenticationFilter.class);
 	@Autowired
     private JwtUtil jwtUtil;
 	@Autowired
@@ -38,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userEmail;
         
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+			LOGGER.debug("No Authorization header or bearer token missing on request to {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,6 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                LOGGER.debug("Invalid JWT for user {}", userEmail);
             }
         }
         filterChain.doFilter(request, response);
