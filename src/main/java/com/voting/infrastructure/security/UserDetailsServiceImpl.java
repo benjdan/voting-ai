@@ -10,19 +10,25 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    
+    private static final Logger LOGGER = LogManager.getLogger(UserDetailsServiceImpl.class);
     private final UserRepository userRepository = null;
     
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> {
+                    LOGGER.debug("User not found with email {}", email);
+                    return new UsernameNotFoundException("User not found with email: " + email);
+                });
+        LOGGER.debug("Loaded user {}", user.getEmail());
         
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
