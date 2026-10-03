@@ -24,79 +24,7 @@ public class BlockchainRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getBlockNumber() {
-		return blockNumber;
-	}
-
-	public void setBlockNumber(Long blockNumber) {
-		this.blockNumber = blockNumber;
-	}
-
-	public String getPreviousHash() {
-		return previousHash;
-	}
-
-	public void setPreviousHash(String previousHash) {
-		this.previousHash = previousHash;
-	}
-
-	public String getCurrentHash() {
-		return currentHash;
-	}
-
-	public void setCurrentHash(String currentHash) {
-		this.currentHash = currentHash;
-	}
-
-	public LocalDateTime getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(LocalDateTime timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public VoteOption getVoteOption() {
-		return voteOption;
-	}
-
-	public void setVoteOption(VoteOption voteOption) {
-		this.voteOption = voteOption;
-	}
-
-	public String getData() {
-		return data;
-	}
-
-	public void setData(String data) {
-		this.data = data;
-	}
-
-	public String getNonce() {
-		return nonce;
-	}
-
-	public void setNonce(String nonce) {
-		this.nonce = nonce;
-	}
-
+	
 	@Column(nullable = false)
     private Long blockNumber;
     
@@ -132,13 +60,5 @@ public class BlockchainRecord {
         if (timestamp == null) {
             timestamp = LocalDateTime.now();
         }
-    }
-    
-    public Vote getVote() {
-        return this.vote;
-    }
-    
-    public void setVote(Vote vote) {
-        this.vote = vote;
     }
 }
